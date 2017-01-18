@@ -129,3 +129,16 @@ module.exports = (robot) ->
       message += "\n>-------"
       message += "\n>#{result.ticket.description}"
       msg.send message
+
+  robot.hear /#([\d+)$/i, (msg) ->
+    ticket_id = msg.match[1]
+    zendesk_requst msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
+      if result.error
+        msg.send "Hmmm. I thought you were talking about a zendesk ticket, but when I tried looking it up, I got an error: #{result.description}"
+        return
+      message = "It sounds like you're referencing a zendesk ticket, let me look that up for you..."
+      message += "\n{tickets_url}/#{result.ticket.id} ##{result.ticket.id} (#{result.ticket.status.toUpperCase()})"
+      message += "\n>Updated: #{result.ticket.updated_at}"
+      message += "\n>Added: #{result.ticket.created_at}"
+      message += "\n>Description: #{result.ticket.description}"
+
