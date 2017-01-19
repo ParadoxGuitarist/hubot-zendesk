@@ -159,7 +159,7 @@ module.exports = (robot) ->
       message += "\n>#{result.ticket.description}"
       msg.send message
 
-  robot.hear /#([\d+)/i, (msg) ->
+  robot.hear /#([\d]+)/i, (msg) ->
     ticket_id = msg.match[1]
     zendesk_request_hear msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
       if result.error
