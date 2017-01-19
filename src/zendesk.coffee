@@ -166,6 +166,6 @@ module.exports = (robot) ->
         msg.send "Hmmm. I thought you were talking about a Zendesk ticket, but when I tried looking it up, I got an error: #{result.description}"
         return
       message = "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
-      message += "\n##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
-      message += "\n#{tickets_url}/#{result.ticket.id}"
+      message += "\n>##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
+      message += "\n>#{tickets_url}/#{result.ticket.id}"
       msg.send message
