@@ -165,6 +165,7 @@ module.exports = (robot) ->
 
   robot.hear /#([\d]+)/i, (msg) ->
     ticket_id = msg.match[1]
+<<<<<<< HEAD
     if process.env.HUBOT_ZENDESK_LISTEN
       msg.send "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
       zendesk_request_hear msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
@@ -175,3 +176,13 @@ module.exports = (robot) ->
         message += "\n##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
         message += "\n#{tickets_url}/#{result.ticket.id}"
         msg.send message
+=======
+    zendesk_request_hear msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
+      if result.error
+        msg.send "Hmmm. I thought you were talking about a Zendesk ticket, but when I tried looking it up, I got an error: #{result.description}"
+        return
+      message = "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
+      message += "\n>##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
+      message += "\n>#{tickets_url}/#{result.ticket.id}"
+      msg.send message
+>>>>>>> ddd180590ce53d597ba1b3c9ff5c61def0c02832
