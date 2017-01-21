@@ -21,6 +21,7 @@ Then add **hubot-zendesk** to your `external-scripts.json`:
 HUBOT_ZENDESK_USER
 HUBOT_ZENDESK_PASSWORD
 HUBOT_ZENDESK_SUBDOMAIN
+HUBOT_ZENDESK_LISTEN
 ```
 
 # Commands:

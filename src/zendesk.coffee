@@ -1,10 +1,15 @@
 # Description:
 #   Queries Zendesk for information about support tickets
 #
+#   Set the environment variable HUBOT_ZENDESK_LISTEN (to anything)
+#   to have hubot scan for Zendesk #<ticket_numbers> and provide
+#   extra information about them. 
+#
 # Configuration:
 #   HUBOT_ZENDESK_USER
 #   HUBOT_ZENDESK_PASSWORD
 #   HUBOT_ZENDESK_SUBDOMAIN
+#   HUBOT_ZENDESK_LISTEN
 #
 # Commands:
 #   hubot zendesk (all) tickets - Returns the total count of all unsolved tickets. The 'all' keyword is optional.
@@ -18,8 +23,7 @@
 #   hubot zendesk list pending tickets - Returns a list of pending tickets.
 #   hubot zendesk list escalated tickets - Returns a list of escalated tickets.
 #   hubot zendesk ticket <ID> - Returns information about the specified ticket.
-#   hubot zd <comands> - 'zd' can be substituted for 'zendesk' in any of the above comands.
-#   #<TicketNumber> - Listens for numbers following # and attempts to return information and a link to the Zendesk ticket. 
+#   hubot zd <commands> - 'zd' can be substituted for 'zendesk' in any of the zendesk commands.
 
 sys = require 'sys' # Used for debugging
 tickets_url = "https://#{process.env.HUBOT_ZENDESK_SUBDOMAIN}.zendesk.com/tickets"
@@ -156,16 +160,18 @@ module.exports = (robot) ->
       message += "\n>Added: #{result.ticket.created_at}"
       message += "\n>Description:"
       message += "\n>-------"
-      message += "\n>#{result.ticket.description}"
+      message += "\n>#{result.ticket.description.replace /\n/g, "\n>"}"
       msg.send message
 
   robot.hear /#([\d]+)/i, (msg) ->
     ticket_id = msg.match[1]
-    zendesk_request_hear msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
-      if result.error
-        msg.send "Hmmm. I thought you were talking about a Zendesk ticket, but when I tried looking it up, I got an error: #{result.description}"
-        return
-      message = "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
-      message += "\n##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
-      message += "\n#{tickets_url}/#{result.ticket.id}"
-      msg.send message
+    if process.env.HUBOT_ZENDESK_LISTEN
+      msg.send "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
+      zendesk_request_hear msg, "#{queries.tickets}/#{ticket_id}.json", (result) ->
+        if result.error
+          msg.send "Hmmm. I thought you were talking about a Zendesk ticket, but when I tried looking it up, I got an error: #{result.description}"
+          return
+        message = "It sounds like you're referencing a Zendesk ticket, let me look that up for you..."
+        message += "\n##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
+        message += "\n#{tickets_url}/#{result.ticket.id}"
+        msg.send message
