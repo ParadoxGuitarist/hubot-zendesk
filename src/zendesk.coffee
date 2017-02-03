@@ -153,7 +153,7 @@ module.exports = (robot) ->
         msg.send result.description
         return
       message = "#{tickets_url}/#{result.ticket.id}"
-      message += "\n>##{result.ticket.id} #(result.ticket.subject) (#{result.ticket.status.toUpperCase()})"
+      message += "\n>##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
       message += "\n>Priority: #{result.ticket.priority}"
       message += "\n>Type: #{result.ticket.type}"
       message += "\n>Updated: #{result.ticket.updated_at}"
